@@ -6,40 +6,81 @@
     <title>Test de Mémorisation du Coran</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Arial', sans-serif;
             text-align: center;
             margin: 50px;
+            background-color: #f4f4f4;
         }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 60vh;
+        }
+
         .question-box {
-            border: 2px solid #008080;
-            padding: 20px;
-            width: 50%;
-            margin: auto;
-            border-radius: 10px;
+            background: white;
+            border: 3px solid #008080;
+            padding: 30px;
+            width: 70%;
+            max-width: 600px;
+            border-radius: 15px;
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
         }
+
+        h1 {
+            color: #008080;
+            margin-bottom: 10px;
+        }
+
         button {
             background-color: #008080;
             color: white;
-            padding: 10px 20px;
+            padding: 15px 25px;
             border: none;
             cursor: pointer;
             margin-top: 20px;
-            border-radius: 5px;
+            border-radius: 8px;
+            font-size: 18px;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background-color: #006666;
+        }
+
+        #question {
+            font-size: 20px;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+
+        #reponse {
+            font-size: 22px;
+            font-weight: bold;
+            color: green;
+            margin-top: 20px;
+            display: none;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
         }
     </style>
 </head>
 <body>
 
     <h1>Test de Mémorisation du Coran</h1>
-    <div class="question-box">
-        <p id="question">Cliquez sur le bouton pour générer une question.</p>
-        <button onclick="genererQuestion()">Nouvelle Question</button>
-        <p id="reponse" style="display: none; font-weight: bold; color: green;"></p>
+    <div class="container">
+        <div class="question-box">
+            <button onclick="genererQuestion()">Question Suivante</button>
+            <p id="question">Clique sur le bouton pour commencer</p>
+            <p id="reponse"></p>
+        </div>
     </div>
 
     <script>
         async function genererQuestion() {
-            const randomAyah = Math.floor(Math.random() * 6236) + 1; // Il y a 6236 versets dans le Coran
+            const randomAyah = Math.floor(Math.random() * 6236) + 1; // Il y a 6236 versets
             const apiUrl = `https://api.alquran.cloud/v1/ayah/${randomAyah}`;
 
             try {
@@ -48,17 +89,19 @@
                 const verset = data.data.text;
                 const sourate = `Sourate ${data.data.surah.name} (${data.data.surah.number}:${data.data.numberInSurah})`;
 
-                document.getElementById("question").textContent = `Quel est le verset suivant ?`;
-                document.getElementById("reponse").textContent = `"${verset}" - ${sourate}`;
-                document.getElementById("reponse").style.display = "none";
+                document.getElementById("question").textContent = `...اقرأ من قوله تعالى `;
+                document.getElementById("reponse").textContent = `"${verset}"\n (${sourate})`;
+                document.getElementById("reponse").style.display = "block";
+                document.getElementById("reponse").style.opacity = "0";
 
+                // Apparition progressive de la réponse après 5 secondes
                 setTimeout(() => {
-                    document.getElementById("reponse").style.display = "block";
-                }, 5000); // Affiche la réponse après 5 secondes
-
+                    document.getElementById("reponse").style.opacity = "1";
+                }, 1000);
+                
             } catch (error) {
-                document.getElementById("question").textContent = "Erreur lors de la récupération du verset.";
-                console.error(error);
+                document.getElementById("question").textContent = "Erreur lors du chargement des versets.";
+                console.error("Erreur API:", error);
             }
         }
     </script>
