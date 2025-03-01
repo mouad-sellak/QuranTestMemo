@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test de Mémorisation du Coran</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+        }
+        .question-box {
+            border: 2px solid #008080;
+            padding: 20px;
+            width: 50%;
+            margin: auto;
+            border-radius: 10px;
+        }
+        button {
+            background-color: #008080;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            margin-top: 20px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Test de Mémorisation du Coran</h1>
+    <div class="question-box">
+        <p id="question">Cliquez sur le bouton pour générer une question.</p>
+        <button onclick="genererQuestion()">Nouvelle Question</button>
+        <p id="reponse" style="display: none; font-weight: bold; color: green;"></p>
+    </div>
+
+    <script>
+        async function genererQuestion() {
+            const randomAyah = Math.floor(Math.random() * 6236) + 1; // Il y a 6236 versets dans le Coran
+            const apiUrl = `https://api.alquran.cloud/v1/ayah/${randomAyah}`;
+
+            try {
+                const response = await fetch(apiUrl);
+                const data = await response.json();
+                const verset = data.data.text;
+                const sourate = `Sourate ${data.data.surah.name} (${data.data.surah.number}:${data.data.numberInSurah})`;
+
+                document.getElementById("question").textContent = `Quel est le verset suivant ?`;
+                document.getElementById("reponse").textContent = `"${verset}" - ${sourate}`;
+                document.getElementById("reponse").style.display = "none";
+
+                setTimeout(() => {
+                    document.getElementById("reponse").style.display = "block";
+                }, 5000); // Affiche la réponse après 5 secondes
+
+            } catch (error) {
+                document.getElementById("question").textContent = "Erreur lors de la récupération du verset.";
+                console.error(error);
+            }
+        }
+    </script>
+
+</body>
+</html>
